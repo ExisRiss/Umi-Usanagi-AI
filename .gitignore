@@ -7,7 +7,7 @@ tmp/
 *.log
 
 # Runtime state and user data
-data/
+/data/
 sessions/
 database.json
 *.session
