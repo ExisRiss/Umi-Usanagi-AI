@@ -3,7 +3,7 @@
  * Sanitized source publisher for Umi Usanagi AI.
  *
  * Run this only on the bot server after configuring a private Git remote.
- * It copies allow-listed source paths into a local Git checkout, blocks common
+ * It mirrors allow-listed source paths into a separate local Git checkout, blocks
  * credentials/runtime state, commits only a real change, then pushes the branch.
  */
 import fs from 'node:fs'
@@ -49,11 +49,15 @@ function copySafe(source, destination, relative = '') {
 }
 
 try {
+  if (repository === runtime) throw new Error('UMI_SOURCE_REPO_DIR harus menunjuk checkout Git terpisah dari UMI_RUNTIME_ROOT.')
   if (!fs.existsSync(path.join(repository, '.git'))) throw new Error(`Repo Git tidak ditemukan: ${repository}`)
   for (const relative of sourcePaths) {
     const source = path.join(runtime, relative)
+    const destination = path.join(repository, relative)
+    // A true mirror removes a deleted source path from the repository too.
+    fs.rmSync(destination, { recursive: true, force: true })
     if (!fs.existsSync(source)) continue
-    copySafe(source, path.join(repository, relative), relative)
+    copySafe(source, destination, relative)
   }
   const status = run('git', ['status', '--porcelain'])
   if (!status) { console.log('[source-publish] Tidak ada perubahan source.'); process.exit(0) }
