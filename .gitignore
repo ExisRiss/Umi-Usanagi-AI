@@ -1,0 +1,38 @@
+# Dependencies and generated files
+node_modules/
+coverage/
+.cache/
+.tmp/
+tmp/
+*.log
+
+# Runtime state and user data
+data/
+sessions/
+database.json
+*.session
+*.auth
+*.enc
+*.sqlite
+*.sqlite3
+
+# Private configuration and credentials
+.env
+.env.*
+!.env.example
+config.js
+.tunnel.env
+.backup-export.env
+.owner-console-relay.env
+.source-publish.env
+*.pem
+*.key
+*.p12
+*.crt
+
+# Private maintenance artefacts
+.umi-*/
+archive-*.tar.gz
+*.tgz
+*.tar.gz
+cloudflared
