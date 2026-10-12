@@ -15,7 +15,8 @@
     "lint": "eslint . --ext .js",
     "test:auto-ai": "node --test tests/auto-ai.test.mjs tests/agent-settings.test.mjs && node --loader ./tests/mock-native-loader.mjs --test tests/native-dispatch.test.mjs",
     "source-publish": "node scripts/publish-source.mjs",
-    "source-sync": "node scripts/source-sync-watcher.mjs"
+    "source-sync": "node scripts/source-sync-watcher.mjs",
+    "start-with-source-sync": "sh scripts/start-with-source-sync.sh"
   },
   "author": "AlzRiss × Arena",
   "license": "MIT",

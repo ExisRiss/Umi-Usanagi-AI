@@ -6,8 +6,12 @@ import { spawn } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 
 const root = path.resolve(process.env.UMI_RUNTIME_ROOT || path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'))
-const watched = ['core', 'integrations', 'lib', 'plugins', 'scripts', 'src', 'tests', 'handler.js', 'main.js', 'index.js', 'package.json', 'package-lock.json']
-const ignored = name => /(?:^|\/)(?:node_modules|data|sessions|tmp|\.cache|\.git)(?:\/|$)|(?:^|\/)\.env|config\.js$|database\.json$/.test(name)
+const watched = ['assets', 'config', 'core', 'font', 'integrations', 'json', 'lib', 'media', 'plugins', 'scripts', 'src', 'tests', 'AUTO-TRANSLATE.md', 'AUTO_AI_GROQ.md', 'CREDITS.md', 'CREDITS_PELENGKAP.md', 'FEATURE_MIGRATION_REPORT.json', 'README.md', 'SOURCE_PLUGIN_MANIFEST.md', 'bg-template.jpg', 'eslint.config.js', 'handler.js', 'index.js', 'main.js', 'package.json', 'package-lock.json', 'run.js']
+const ignored = name => {
+  const parts = String(name).split(path.sep)
+  const base = parts.at(-1)
+  return parts[0] === 'data' || parts.some(part => ['node_modules', 'sessions', 'tmp', '.cache', '.git'].includes(part)) || base.startsWith('.env') || ['config.js', 'database.json'].includes(base)
+}
 let timer = null, running = false, queued = false
 function publish() {
   if (running) { queued = true; return }
@@ -21,4 +25,5 @@ for (const relative of watched) {
   if (!fs.existsSync(target)) continue
   fs.watch(target, { recursive: fs.statSync(target).isDirectory() }, (_event, filename = '') => { if (!ignored(path.join(relative, filename))) schedule() })
 }
-console.log('[source-sync] Watcher aktif. Perubahan source akan dipublish setelah 45 detik tenang.')
+console.log('[source-sync] Watcher aktif. Source awal dan setiap perubahan akan dipublish setelah 45 detik tenang.')
+publish()
